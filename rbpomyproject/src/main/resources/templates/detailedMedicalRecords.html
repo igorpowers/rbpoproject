@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Просмотр записи</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        div {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        h3 {
+            color: #333;
+        }
+
+        h2 {
+            color: #007bff;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="submit"],
+        input[type="button"] {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <h3>Запись</h3>
+    <h2 th:text="${medicalRecords.category.name}"></h2>
+    <h1 th:text="${medicalRecords.title}"></h1>
+    <h1 th:text="${medicalRecords.text}"></h1>
+</div>
+
+<form id="commentForm" th:action="@{/comment/create/}+${medicalRecords.id}" method="post" th:object="${Comment}">
+    <input th:field="*{commentText}" type="text" name="commentText" id="commentText" placeholder="Оставьте комментарий">
+    <input type="submit" value="Опубликовать комментарий" />
+</form>
+
+<form>
+    <input type="button" value="Назад" onclick="history.back()">
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>Aвтор</th>
+        <th>Комментарий</th>
+    </tr>
+    </thead>
+    <tbody id="commentsTable">
+    <!-- Здесь будут отображаться комментарии -->
+    <tr th:each="comment : ${Comments}">
+        <td th:text="${comment.author.username}"></td>
+        <td th:text="${comment.commentText}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- JavaScript для отправки AJAX-запроса и обновления данных -->
+<script th:inline="javascript">
+    $(document).ready(function() {
+        $("#commentForm").submit(function(e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+            $.post({
+                url: $(this).attr("action"),
+                data: formData,
+                success: function(response) {
+                    if (response === 'success') {
+                        // Очистить введенный текст комментария
+                        var medicalRecordsId = /*[[${medicalRecords.id}]]*/; // Внедряем значение из модели Thymeleaf
+                        loadComments(medicalRecordsId);
+                        $("#commentText").val('');
+                        // Загрузить обновленные комментарии
+                    } else if (response === 'emptyComment') {
+                        alert('Комментарий не может быть пустым.');
+                    } else {
+                        alert('Произошла ошибка при создании комментария.');
+                    }
+                }
+            });
+        });
+    });
+
+    function loadComments(medicalRecordsId) {
+        // Загрузить обновленные комментарии и заменить текущий фрагмент страницы
+        $("#commentsTable").load("/medicalRecords/" + medicalRecordsId + " #commentsTable");
+    }
+</script>
+</body>
+
+</html>

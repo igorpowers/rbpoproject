@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Регистрация</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+
+    form {
+        max-width: 400px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 5px;
+    }
+
+    input[type="submit"] {
+        background-color: #4caf50;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    input[type="button"] {
+        background-color: #808080;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .error-message {
+        color: #ff0000;
+        margin-top: 10px;
+    }
+
+    a {
+        text-decoration: none;
+        color: #007bff;
+        margin-left: 5px;
+    }
+  </style>
+  <!-- Вставьте ваш публичный ключ reCAPTCHA ниже -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+
+<body>
+<form th:action="@{/registration}" method="post" th:object="${AppUser}">
+  <label for="name">Введите вашу фамилию:</label>
+  <input th:field="*{username}" type="text" name="name" id="name" placeholder="Введите вашу фамилию">
+
+  <label for="email">Введите почту:</label>
+  <input th:field="*{email}" type="email" name="email" id="email" placeholder="Введите почту">
+
+  <label for="password">Придумайте пароль:</label>
+  <input th:field="*{passwordHash}" type="password" name="password" id="password" placeholder="Придумайте пароль">
+
+<!--  <label><input type="checkbox" name="role" id="role"> Вы доктор?</label>-->
+
+  <div class="g-recaptcha col-sm-5"
+       th:attr="data-sitekey=${@captchaSettings.getSite()}"></div>
+  <span id="captchaError" class="alert alert-danger col-sm-4"
+        style="display:none"></span>
+
+  <input type="submit" value="Зарегистрироваться">
+</form>
+<form>
+  <input type="button" value="Назад" onclick="history.back()">
+</form>
+
+<div class="error-message" th:if="${errors}">
+  [[${errors}]] <a th:href="*{link}"> [[${link}]] </a>
+</div>
+</body>
+
+</html>
