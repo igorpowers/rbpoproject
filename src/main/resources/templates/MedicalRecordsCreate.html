@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    h1 {
+        color: #333;
+        margin-top: 20px;
+    }
+
+    form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        max-width: 400px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    input[type="submit"],
+    input[type="button"] {
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+    }
+
+    div {
+        color: #ff0000;
+        margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<h1>qwertyui</h1>
+<form th:action="@{/medicalRecords/create}" method="post" th:object="medicalRecords">
+  <input th:field="*{title}" type="text" name="title" id="title" placeholder="Название статьи">
+  <input th:field="*{text}" type="text" name="text" id="text" placeholder="Текст статьи">
+  <input th:field="*{patientEmail}" type="text" name="patientEmail" id="patientEmail" placeholder="Почта пациента">
+  <input type="submit" value="Опубликовать">
+</form>
+
+<form>
+  <input type="button" value="Назад" onclick="history.back()">
+</form>
+
+<div>[[${errors}]]</div>
+</body>
+
+</html>
